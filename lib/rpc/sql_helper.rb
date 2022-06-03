@@ -89,7 +89,7 @@ class RCP
     if select_on != nil
       select_on.each do |k, v|
         acceptable(value: k, acceptable_list: acceptable_list)
-        where_strings << "#{k} = '#{Mysql.quote(v.to_s)}'"
+        where_strings << "#{k} = '#{WIKK::SQL.escape(v.to_s)}'"
       end
     end
     return where_strings.length > 0 ? (' where ' + where_strings.join(' and ')) : ''
@@ -101,7 +101,7 @@ class RCP
     if set != nil
       set.each do |k, v|
         acceptable(value: k, acceptable_list: acceptable_list)
-        set_strings << "#{k} = '#{Mysql.quote(v)}'" if v != nil
+        set_strings << "#{k} = '#{WIKK::SQL.escape(v)}'" if v != nil
       end
     end
     return set_strings.length > 0 ? set_strings.join(', ') : ''

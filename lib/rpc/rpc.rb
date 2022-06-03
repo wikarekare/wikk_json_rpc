@@ -1,4 +1,3 @@
-require 'wikk_sql'
 require 'wikk_configuration'
 
 require_relative '_rpc.rb'          # Actual declaration of RPC
