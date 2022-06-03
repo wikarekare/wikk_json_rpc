@@ -80,11 +80,12 @@ class RPC
               args = []
               if (a = json_rpc[:params]) != nil; args += a; end   # Accept this form
               kwargs = json_rpc[:kwparams].nil? ? {} : json_rpc[:kwparams]
+              kwargs.transform_keys!(& :to_sym )
               response[:result] = RPC.rsend(Kernel.const_get(the_class).new(authenticated), the_method.to_sym, *args, **kwargs)
             rescue Exception => e # rubocop:disable Lint/RescueException (don't want this to fail, for any reason)
               backtrace = e.backtrace[0].split(':')
               message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]} #{backtrace[-1]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
-              response[:error] = { code: -32000, message: "Method (auth=#{authenticated}) '#{method}': #{message} " }
+              response[:error] = { code: -32000, message: "Method #{the_method} (auth=#{authenticated}) RPC: '#{method}': #{message} " }
             end
           else
             response[:error] = { code: -32601, message: "No method (auth=#{authenticated}) '#{method}'" }
