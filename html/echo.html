@@ -1,0 +1,52 @@
+<html>
+<title>Wikk RPC Test</title>
+<script src="/js/jquery-3.0.0.min.js"></script>
+<script src="/js/wikk_ajax-min.js"></script>
+<script src="/js/wikk_echo.js"></script>
+<script>
+  // Cache the waiting gif
+  var working_img = new Image();
+  working_img.src = "/images/chain_waiting_image/chain.gif";
+
+  // fill in the response div with the echo response.
+  // This happens in a separate thread
+  function echo_response_handler(result) {
+    var result_div = document.getElementById("result_div");
+    var error_div = document.getElementById("error_div");
+    var waiting_span = document.getElementById("waiting");
+    waiting.style.display = "none"; // Hide the waiting div
+
+    if(results != null) {
+      result_div.innerHTML=result.response;
+      error_div.innerHTML=result.messages;
+    } else {
+      result_div.innerHTML="";
+      error_div.innerHTML="Got a null response"
+    }
+  }
+  // Respond to form submit
+  function post_form() {
+    var the_form = document.getElementById('echo_form');
+    waiting.style.display = "display"; // Start waiting gif
+    wikk_echo.get_echo(the_form.message, echo_response_handler)
+  }
+  // Set up
+  function init(){
+  }
+</script>
+</head>
+<body onload="init();">
+  <h2> Send a message to the server, which should send it back</h2>
+  <form id='echo_form'>
+    Message <input type="text" name="message" value="The quick brown fox jumped over the lazy dog" id="message" size="32">
+    <BUTTON type="submit" id="usage" onClick="post_form();this.blur();return false"> Usage </BUTTON>
+  </form>
+  <span id="waiting" style="margin-left:0px;display:none;"><img src="/images/chain_waiting_image/chain.gif"></span>
+  <div id='result_div'>
+    The echo response is displayed here
+  </div>
+  <div id='error_div'>
+    Error Messages are displayed here
+  </div>
+</body>
+</html>
