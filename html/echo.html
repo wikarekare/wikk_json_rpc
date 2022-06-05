@@ -28,8 +28,8 @@
   function post_form() {
     var the_form = document.getElementById('echo_form');
     waiting.style.display = "display"; // Start waiting gif
-    alert('message: ' + the_form.message)
-    wikk_echo.get_echo(the_form.message, echo_response_handler)
+    alert('message: ' + the_form.message.value)
+    wikk_echo.get_echo(the_form.message.value, echo_response_handler)
   }
   // Set up
   function init(){
