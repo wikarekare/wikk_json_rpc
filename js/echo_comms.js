@@ -32,7 +32,7 @@ var wikk_echo = ( function() {
     var args = {
       "method": "RPC_Echo.echo",
       "kwparams": {
-        "select_on": { "message" => message },
+        "select_on": { "message": message },
         "set": {},
         "result": ["response"]
       },
