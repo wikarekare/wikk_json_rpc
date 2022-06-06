@@ -1,7 +1,9 @@
-require 'wikk_sql'
+#
 # Used to create queries on the fly, which allows us to limit responses to a smaller subset of fields
 # These are to be deprecated, as it is clearer to write each query, and accept the inefficencies.
-class RCP
+module SQL_Helpers
+  require 'wikk_sql'
+
   # Methods for processing argument lists.
 
   # Validate that we are permitted to view the field requested
@@ -76,7 +78,7 @@ class RCP
     result_strings = []
     if result != nil
       result.each do |v|
-        acceptable(value: v, acceptable_list: acceptable_list)
+        acceptable(field: v, acceptable_list: acceptable_list)
         result_strings << "#{v}"
       end
     end
@@ -88,7 +90,7 @@ class RCP
     where_strings = []
     if select_on != nil
       select_on.each do |k, v|
-        acceptable(value: k, acceptable_list: acceptable_list)
+        acceptable(field: k, acceptable_list: acceptable_list)
         where_strings << "#{k} = '#{WIKK::SQL.escape(v.to_s)}'"
       end
     end
@@ -100,7 +102,7 @@ class RCP
     set_strings = []
     if set != nil
       set.each do |k, v|
-        acceptable(value: k, acceptable_list: acceptable_list)
+        acceptable(field: k, acceptable_list: acceptable_list)
         set_strings << "#{k} = '#{WIKK::SQL.escape(v)}'" if v != nil
       end
     end
@@ -134,7 +136,7 @@ class RCP
     order_by_strings = []
     if order_by != nil
       order_by.each do |v|
-        acceptable(value: v, acceptable_list: acceptable_list)
+        acceptable(field: v, acceptable_list: acceptable_list)
         order_by_strings << "#{v}"
       end
     end

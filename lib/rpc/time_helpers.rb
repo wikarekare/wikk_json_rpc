@@ -1,5 +1,5 @@
 # Temporary addition to RCP, while we hunt and kill its current use.
-class RPC
+module Time_Helpers
   # Iterator for time ranges.
   # @param start_time (Time) first date
   # @param end_time (Time) upto, but not including this date

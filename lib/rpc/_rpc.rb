@@ -1,5 +1,11 @@
+require_relative 'sql_helpers.rb'    # RPC SQL helper methods. Being deprecated
+require_relative 'time_helpers.rb' # RPC time iterator method. Being deprecated
+
 # Base class for plugins
 class RPC
+  include SQL_Helpers
+  include Time_Helpers
+
   # Defined remote methods, needed across all instances
   @@rmethods = {} # rubocop:disable Style/ClassVars
 
@@ -7,6 +13,7 @@ class RPC
 
   def initialize(authenticated = false)
     @authenticated = authenticated
+    @db_config = WIKK::Configuration.new(MYSQL_CONF)
   end
 
   def self.class_exists?(class_name)
