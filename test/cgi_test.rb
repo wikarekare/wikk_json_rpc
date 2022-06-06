@@ -1,6 +1,5 @@
 #!/usr/local/bin/ruby
 require 'time'
-require '/wikk/rlib/wikk_conf.rb'
 require 'wikk_webbrowser'
 require 'pp'
 
@@ -9,11 +8,12 @@ TEST_WEB_SERVER = '100.64.0.12'
 
 # Test rpc.rbx cgi via http
 class RPC
-  def initialize(url:, identity: nil, auth: nil)
+  def initialize(url:, host:, identity: nil, auth: nil)
     @cookies = []
     @url = url
     @identity = identity
     @auth = auth
+    @host = host
   end
 
   # JSON RPC call via the web browser @ host
@@ -21,8 +21,8 @@ class RPC
   # @param url [String] cgi URL
   # @param query [String] JSON RPC post data
   # @param return [String] Parsed JSON response from the web server
-  def self.rpc(url:, query:)
-    WIKK::WebBrowser.http_session(host: host, verify_cert: false) do |ws|
+  def self.rpc(url:, host:, query:)
+    WIKK::WebBrowser.http_session(host: host) do |ws|
       response = ws.post_page(query: url,
                               # authorization: wb.bearer_authorization(token: @auth_token),
                               content_type: 'application/json',
@@ -40,7 +40,8 @@ def test_rpc_echo
   # rpc = RPC.new
   puts 'Entering test_rpc_echo'
   begin
-    r = RPC.rpc(  url: "http://#{TEST_WEB_SERVER}/rpc.rbx",
+    r = RPC.rpc(  url: "http://#{TEST_WEB_SERVER}/ruby/rpc.rbx",
+                  host: TEST_WEB_SERVER,
                   query: { 'method' => 'RPC_Echo.echo',
                            'kwparams' => {
                              'select_on' => { 'message' => 'The quick brown fox jumped over the lazy dog' },
@@ -55,7 +56,7 @@ def test_rpc_echo
     puts r.class
     puts r
   rescue StandardError => e
-    puts e.message
+    puts "Exception from RPC.rpc: #{e.message}"
   end
 end
 
