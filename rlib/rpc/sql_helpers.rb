@@ -39,7 +39,7 @@ module SQL_Helpers
     response = {}
     rows = []
     WIKK::SQL.connect(@db_config) do |sql|
-      sql.each_hash("select #{select} from #{table} #{where} #{order_by}", with_tables) do |row|
+      sql.each_hash("SELECT #{select} FROM #{table} #{where} #{order_by}", with_tables) do |row|
         rows << row
       end
       response['rows'] = rows
@@ -53,7 +53,7 @@ module SQL_Helpers
     response = {}
     rows = []
     WIKK::SQL.connect(@db_config) do |sql|
-      sql.each_hash("select #{select} from #{table} #{where} #{order_by}", with_tables) do |row|
+      sql.each_hash("SELECT #{select} FROM #{table} #{where} #{order_by}", with_tables) do |row|
         rows << row
       end
       response['rows'] = rows
@@ -66,7 +66,9 @@ module SQL_Helpers
   def sql_single_table_update(table:, set:, where: )
     response = {}
     WIKK::SQL.connect(@db_config) do |sql|
-      sql.query("update #{table} set #{set} #{where}")
+      sql.query <<~SQL
+        UPDATE #{table} set #{set} #{where}"
+      SQL
       response['rows'] = []
       response['affected_rows'] = sql.affected_rows
     end
