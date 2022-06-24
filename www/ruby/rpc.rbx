@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby
 @message = nil
-RLIB = '/wikk/rlib'
+RLIB = '/wikk/rlib' unless defined? RLIB
 
 # Having issues with gems not loading, so catching the error for logging
 [ 'cgi', 'json', 'wikk_web_auth', 'wikk_configuration' ].each do |f|

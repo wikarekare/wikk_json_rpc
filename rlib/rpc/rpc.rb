@@ -1,5 +1,6 @@
 require 'wikk_configuration'
 require 'wikk_json'
+RLIB = '/wikk/rlib' unless defined? RLIB
 
 require_relative '_rpc.rb'          # Actual declaration of RPC
 require_relative 'acl.rb'
