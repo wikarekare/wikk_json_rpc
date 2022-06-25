@@ -67,7 +67,7 @@ module SQL_Helpers
     response = {}
     WIKK::SQL.connect(@db_config) do |sql|
       sql.query <<~SQL
-        UPDATE #{table} set #{set} #{where}"
+        UPDATE #{table} SET #{set} #{where}
       SQL
       response['rows'] = []
       response['affected_rows'] = sql.affected_rows
