@@ -39,7 +39,10 @@ module SQL_Helpers
     response = {}
     rows = []
     WIKK::SQL.connect(@db_config) do |sql|
-      sql.each_hash("SELECT #{select} FROM #{table} #{where} #{order_by}", with_tables) do |row|
+      query = <<~SQL
+        SELECT #{select} FROM #{table} #{where} #{order_by}
+      SQL
+      sql.each_hash(query, with_tables) do |row|
         rows << row
       end
       response['rows'] = rows
@@ -53,7 +56,10 @@ module SQL_Helpers
     response = {}
     rows = []
     WIKK::SQL.connect(@db_config) do |sql|
-      sql.each_hash("SELECT #{select} FROM #{table} #{where} #{order_by}", with_tables) do |row|
+      query = <<~SQL
+        SELECT #{select} FROM #{table} #{where} #{order_by}
+      SQL
+      sql.each_hash(query, with_tables) do |row|
         rows << row
       end
       response['rows'] = rows
