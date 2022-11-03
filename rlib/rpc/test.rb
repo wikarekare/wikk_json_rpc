@@ -40,7 +40,7 @@ def rmethods
                )
     return if r.nil?
 
-    r['result']['rmethods'].each do |the_class, the_rmethods|
+    r['result']['rmethods'].sort.each do |the_class, the_rmethods|
       puts "#{the_class} #{the_rmethods}"
     end
     puts r['result']['messages']
