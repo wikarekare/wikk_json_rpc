@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby
 require 'time'
 RLIB = '/wikk/rlib' unless defined? RLIB
-require_relative "#{RLIB}/lib/rpc/rpc.rb"
+require_relative "#{RLIB}/rpc/rpc.rb"
 
 def test_rpc_echo
   # rpc = RPC.new
