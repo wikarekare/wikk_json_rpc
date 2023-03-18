@@ -4,7 +4,8 @@ require 'wikk_webbrowser'
 require 'pp'
 
 # Set this to the current test web server (Get address when it is spawned)
-TEST_WEB_SERVER = '100.64.0.12'
+TEST_WEB_SERVER = '127.0.0.1'
+TEST_PORT = 3223
 
 # Test rpc.rbx cgi via http
 class RPC
@@ -22,7 +23,7 @@ class RPC
   # @param query [String] JSON RPC post data
   # @param return [String] Parsed JSON response from the web server
   def self.rpc(url:, host:, query:)
-    WIKK::WebBrowser.http_session(host: host) do |ws|
+    WIKK::WebBrowser.http_session(host: host, port: TEST_PORT) do |ws|
       response = ws.post_page(query: url,
                               # authorization: wb.bearer_authorization(token: @auth_token),
                               content_type: 'application/json',
@@ -56,8 +57,32 @@ def test_rpc_echo
     puts r.class
     puts r
   rescue StandardError => e
-    puts "Exception from RPC.rpc: #{e.message}"
+    puts "Exception from RPC_Echo.echo RPC.rpc: #{e.message}"
+  end
+end
+
+def fetch_rmethods
+  puts 'Entering fetch_rmethods'
+  begin
+    r = RPC.rpc(  url: "http://#{TEST_WEB_SERVER}/ruby/rpc.rbx",
+                  host: TEST_WEB_SERVER,
+                  query: { 'method' => 'Test.get_rmethods',
+                           'kwparams' => {
+                             'select_on' => {},
+                             'set' => {},
+                             'result' => []
+                           },
+                           'id' => 1234,
+                           'version' => '1.1'
+                        }
+               )
+    puts 'fetch_rmethods: Test.get_rmethods call completed'
+    puts r.class
+    puts r
+  rescue StandardError => e
+    puts "Exception from Test.get_rmethods RPC.rpc: #{e.message}"
   end
 end
 
 test_rpc_echo
+fetch_rmethods
