@@ -4,6 +4,7 @@ RLIB = '/wikk/rlib' unless defined? RLIB
 require_relative "#{RLIB}/wikk_conf.rb"  # to get MYSQL_CONF (which we don't actually use, but is read)
 require_relative "#{RLIB}/rpc/rpc.rb"
 
+# Test through Ruby RPC instance, not via TCP Socket
 def test_rpc_echo
   # rpc = RPC.new
   puts 'Entering test_rpc_echo'
