@@ -1,6 +1,7 @@
 #!/usr/local/bin/ruby
 require 'time'
 RLIB = '/wikk/rlib' unless defined? RLIB
+require_relative "#{RLIB}/wikk_conf.rb"  # to get MYSQL_CONF (which we don't actually use, but is read)
 require_relative "#{RLIB}/rpc/rpc.rb"
 
 def test_rpc_echo
