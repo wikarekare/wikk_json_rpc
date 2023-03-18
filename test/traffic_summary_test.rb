@@ -4,13 +4,14 @@ require 'json'
 RLIB = '/wikk/rlib' unless defined? RLIB
 require_relative "#{RLIB}/rpc/rpc.rb"
 
+# Test through Ruby RPC instance, not via TCP Socket
 def test_rpc_rmethods
   # rpc = RPC.new
   puts 'Entering test_rpc_echo'
   begin
-    r = RPC.rpc( query: { 'method' => 'Test.get_rmethods',
+    r = RPC.rpc( query: { 'method' => 'Traffic.site_daily_usage_summary',
                           'kwparams' => {
-                            'select_on' => {},
+                            'select_on' => { 'hostname' => 'wikk003' },
                             'set' => {},
                             'result' => []
                           },
@@ -20,13 +21,11 @@ def test_rpc_rmethods
                  authenticated: true
                )
     hr = JSON.parse(r)
-    hr['result']['rmethods'].sort.each do |rclass, rmethods|
-      puts "#{rclass} #{rmethods}"
-    end
+    p hr
   rescue StandardError => e
     puts e.message
   end
 end
 
-puts 'Registered rmethods'
+puts 'Daily Traffic Summary Site wikk003'
 test_rpc_rmethods
