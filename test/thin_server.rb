@@ -10,7 +10,7 @@ RLIB = '/wikk/rlib' unless defined? RLIB
 require_relative "#{RLIB}/wikk_conf.rb"
 require_relative "#{RLIB}/rpc/rpc.rb"
 
-# Handle web queries, using thin an rack.
+# Handle web queries, using thin and rack.
 # Class needs a call() method for Thin.
 class Responder
   # Init the Responder class
@@ -41,7 +41,7 @@ class Responder
 
   # Turn json in query body into a Hash. We expect it to be json
   private def extract_json
-    raise "Content type needs to be JSON (Got #{@env}['CONTENT_TYPE'])" if @env['CONTENT_TYPE'] != 'application/json'
+    raise "Content type needs to be JSON (Got #{@env['CONTENT_TYPE']})" if @env['CONTENT_TYPE'].strip != 'application/json'
 
     return @the_body.nil? || @the_body.empty? ? {} : JSON.parse(@the_body)
   end
