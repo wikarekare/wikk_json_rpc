@@ -29,6 +29,8 @@ class Responder
     dump_html if @debug
 
     if @message.nil?
+      # We could be behind a forwarding proxy server, so we will not see the ENV that we need to.
+      ENV['REMOTE_ADDR'] = @env['HTTP_X_FORWARDED_FOR'].nil? ? @env['REMOTE_ADDR'] : @env['HTTP_X_FORWARDED_FOR']
       # simple_test_pattern
       # test_pattern
       # dev_response
