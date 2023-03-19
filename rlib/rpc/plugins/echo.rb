@@ -2,7 +2,7 @@
 class RPC_Echo < RPC
   def initialize(authenticated = false)
     super(authenticated)
-    @requestor = ENV.fetch('REMOTE_ADDR', nil)  # Works with mod-ruby under Apache2, but not thin, proxied by Apache2
+    @requestor = ENV.fetch('REMOTE_ADDR', nil)
     @messages = ''
   end
 
@@ -12,9 +12,9 @@ class RPC_Echo < RPC
   end
 
   private def response(address_string:, message_received:, **_kwargs)
-    return { 'remote_addr' => address_string,
-             'response' => message_received,
-             'messages' => @messages
+    return { 'remote_addr' => address_string,  # Send back the IP of the host making the request
+             'response' => message_received,   # Send back the message we received
+             'messages' => @messages           # We send back error messages here
             }
   end
 end
