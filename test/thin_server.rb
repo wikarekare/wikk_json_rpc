@@ -11,6 +11,8 @@ require_relative "#{RLIB}/wikk_conf.rb"
 require_relative "#{RLIB}/rpc/rpc.rb"
 
 # Handle web queries, using thin and rack.
+# We can put this behind Apache2 or nginx, using proxy/rev-proxy directives.
+# The advantage is, that this process doesn't need to run as Apache, so can have a different Apparmor profile.
 # Class needs a call() method for Thin.
 class Responder
   # Init the Responder class
@@ -31,6 +33,8 @@ class Responder
     if @message.nil?
       # We could be behind a forwarding proxy server, so we will not see the ENV that we need to.
       ENV['REMOTE_ADDR'] = @env['HTTP_X_FORWARDED_FOR'].nil? ? @env['REMOTE_ADDR'] : @env['HTTP_X_FORWARDED_FOR']
+      # Might be using REST methodology, where the REQUEST_METHOD alters behaviour
+      ENV['REQUEST_METHOD'] = @env['REQUEST_METHOD']
       # simple_test_pattern
       # test_pattern
       # dev_response
@@ -105,29 +109,27 @@ class Responder
 
   private def dump_html
     puts '**********************************************************************'
-    puts "script_name #{@req.script_name}"
-    puts "request_method #{@req.request_method}"
-    puts "Query String #{@req.query_string}"
-    puts "content_type #{@req.content_type}"
+    puts "script_name: #{@req.script_name}"
+    puts "request_method: #{@req.request_method}"
+    puts "Query String: #{@req.query_string}"
+    puts "content_type: #{@req.content_type}"
     puts
-    params = @req.params
-    puts "req.params=#{params}"
+    puts "req.params = #{@req.params}"
     rack_input_str = @env['rack.input'].read
     puts "rack_input = #{rack_input_str}"
     # rack_errors_str = @env['rack.errors'].read
     # puts "rack_errors = #{rack_errors_str}"
-    post_data = ''
+    puts "\nEnv:"
     @env.each do |k, v|
-      post_data += "#{k}=>#{v}\n"
+      puts "  #{k} = #{v}"
     end
-    puts 'Env:'
-    puts post_data
-    puts "Body\n"
+    puts "\nBody:"
     puts @the_body
   end
 end
 
 rack_app = Responder.new(debug: true)
 
+PORT = 3223 # Might shift this to a config file or an argument
 # Listen on the loopback address.
-Rack::Handler::Thin.run rack_app, Host: '127.0.0.1', Port: 3223
+Rack::Handler::Thin.run rack_app, Host: '127.0.0.1', Port: PORT
