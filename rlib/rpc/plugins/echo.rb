@@ -2,7 +2,7 @@
 class RPC_Echo < RPC
   def initialize(authenticated = false)
     super(authenticated)
-    @requestor = ENV['REMOTE_ADDR']
+    @requestor = ENV.fetch('REMOTE_ADDR', nil)  # Works with mod-ruby under Apache2, but not thin, proxied by Apache2
     @messages = ''
   end
 
