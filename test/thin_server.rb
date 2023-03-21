@@ -47,7 +47,7 @@ class Responder
 
   # Turn json in query body into a Hash. We expect it to be json
   private def extract_json
-    raise "Content type needs to be JSON (Got #{@env['CONTENT_TYPE']})" if @env['CONTENT_TYPE'].strip != 'application/json'
+    raise "Content type needs to be JSON (Got #{@env['CONTENT_TYPE']})" if @env['CONTENT_TYPE'] !~ /application\/json/
 
     return @the_body.nil? || @the_body.empty? ? {} : JSON.parse(@the_body)
   end
@@ -94,7 +94,13 @@ class Responder
       rpc_json = extract_json
       puts rpc_json if @debug
       response = RPC.rpc( authenticated: authenticated?, query: rpc_json )
-      return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+
+      headers = {
+        'Content-Type' => 'application/json',
+        'Set-Cookie' => [ 'foo=bar', 'bar=foo' ]
+      }
+
+      return [ 200, headers, [ response ]]
     rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
       backtrace = e.backtrace[0].split(':')
       @message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
