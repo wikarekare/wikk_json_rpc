@@ -11,7 +11,7 @@ TEST_PORT = 3223
 # Test rpc.rbx cgi via http
 class RPC
   def initialize(url:, host:, identity: nil, auth: nil)
-    @cookies = []
+    @cookies = nil
     @url = url
     @identity = identity
     @auth = auth
@@ -31,8 +31,27 @@ class RPC
                               data: query.to_j
                                # extra_headers: { "x-apikey"=> NIWA_API_KEY }
                              )
+      @cookies = ws.cookies
       return JSON.parse(response)
     end
+  end
+end
+
+# JSON RPC call via the web browser @ host
+# Ignoring authentication for the moment. Testing via http will tell us if the service works.
+# @param url [String] cgi URL
+# @param query [String] JSON RPC post data
+# @param return [String] Parsed JSON response from the web server
+def rpc(url:, host:, port:, query:)
+  WIKK::WebBrowser.http_session(host: host, port: port) do |ws|
+    response = ws.post_page(query: url,
+                            # authorization: wb.bearer_authorization(token: @auth_token),
+                            content_type: 'application/json',
+                            data: query.to_j
+                             # extra_headers: { "x-apikey"=> NIWA_API_KEY }
+                           )
+    @cookies = ws.cookies
+    return JSON.parse(response)
   end
 end
 
@@ -42,25 +61,31 @@ def test_rpc_echo
   # rpc = RPC.new
   puts 'Entering test_rpc_echo'
   begin
-    r = RPC.rpc(  url: 'rpc',
-                  host: @options[:host],
-                  port: @options[:port],
-                  query: { 'method' => 'RPC_Echo.echo',
-                           'kwparams' => {
-                             'select_on' => { 'message' => 'The quick brown fox jumped over the lazy dog' },
-                             'set' => {},
-                             'result' => []
-                           },
-                           'id' => 1234,
-                           'version' => '1.1'
-                        }
-               )
+    r = rpc( url: 'rpc',
+             host: @options[:host],
+             port: @options[:port],
+             query: { 'method' => 'RPC_Echo.echo',
+                      'kwparams' => {
+                        'select_on' => { 'message' => 'The quick brown fox jumped over the lazy dog' },
+                        'set' => {},
+                        'result' => []
+                      },
+                      'id' => 1234,
+                      'version' => '1.1'
+                   }
+           )
     puts 'test_rpc_echo: RPC_Echo.echo call completed'
     puts r.class
     puts r
   rescue StandardError => e
     puts "Exception from RPC_Echo.echo RPC.rpc: #{e.message}"
   end
+end
+
+# Convert @cookies to ; separated strings
+# @return cookies string
+def cookies_to_s
+  @cookies.nil? ? '' : @cookies.to_a.map { |v| v.join('=') }.join('; ')
 end
 
 def fetch_rmethods
@@ -82,6 +107,8 @@ def fetch_rmethods
     puts 'fetch_rmethods: Test.get_rmethods call completed'
     puts r.class
     puts r
+    puts 'Cookies:'
+    puts cookies_to_s
   rescue StandardError => e
     puts "Exception from Test.get_rmethods RPC.rpc: #{e.message}"
   end
