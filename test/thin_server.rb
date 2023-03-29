@@ -21,7 +21,9 @@ class Responder
     attr_accessor :output_cookies
     attr_accessor :remote_addr
 
-    def initialize(env:)
+    def initialize(env:, pstore_config:)
+      @pstore_conf = JSON.parse(pstore_config)
+
       @env = env
       @cookies = {}
       @remote_addr = @env['HTTP_X_FORWARDED_FOR'].nil? ? @env['REMOTE_ADDR'] : @env['HTTP_X_FORWARDED_FOR']
@@ -100,7 +102,7 @@ class Responder
     begin
       return false if @cgi.nil?
 
-      return WIKK::Web_Auth.authenticated?(@cgi)
+      return WIKK::Web_Auth.authenticated?(@cgi, pstore_config: @pstore_conf)
     rescue Exception => _e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
       return false
     end
@@ -186,7 +188,7 @@ class Responder
   end
 end
 
-rack_app = Responder.new(debug: true)
+rack_app = Responder.new(debug: true, pstore_config: PSTORE_CONF)
 
 PORT = 3223 # Might shift this to a config file or an argument
 # Listen on the loopback address.
