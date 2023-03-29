@@ -72,7 +72,7 @@ def simple_test_pattern
 end
 
 @cgi = CGI.new('html5')
-@pstore_conf = JSON.parse(PSTORE_CONF)
+@pstore_conf = JSON.parse(File.read(PSTORE_CONF))
 
 rack_result = if @message.nil?
                 # rack_result = simple_test_pattern

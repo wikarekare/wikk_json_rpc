@@ -22,7 +22,7 @@ class Responder
     attr_accessor :remote_addr
 
     def initialize(env:, pstore_config:)
-      @pstore_conf = JSON.parse(pstore_config)
+      @pstore_conf = JSON.parse(File.read(pstore_config))
 
       @env = env
       @cookies = {}
