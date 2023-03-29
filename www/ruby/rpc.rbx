@@ -29,7 +29,7 @@ end
 
 def authenticated
   begin
-    return WIKK::Web_Auth.authenticated?(@cgi)
+    return WIKK::Web_Auth.authenticated?(@cgi, pstore_config: @pstore_conf)
   rescue Exception => _e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
     return false
   end
@@ -58,7 +58,7 @@ end
 
 def test_pattern
   begin
-    logged_in = WIKK::Web_Auth.authenticated?(@cgi)
+    logged_in = WIKK::Web_Auth.authenticated?(@cgi, pstore_config: @pstore_conf)
   rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
     @message = "test_pattern: Auth test: #{e}"
   end
@@ -72,6 +72,7 @@ def simple_test_pattern
 end
 
 @cgi = CGI.new('html5')
+@pstore_conf = JSON.parse(PSTORE_CONF)
 
 rack_result = if @message.nil?
                 # rack_result = simple_test_pattern
