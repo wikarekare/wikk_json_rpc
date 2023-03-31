@@ -1,0 +1,17 @@
+---
+user: www-data
+group: www-data
+chdir: "/wikk/www/rpc"
+environment: development
+address: 127.0.0.1
+port: 3223
+timeout: 30
+log: "/wikk/var/log/httpd/thin.log"
+pid: /wikk/var/run/apache2/thin.pid
+max_conns: 1024
+max_persistent_conns: 100
+require: []
+wait: 30
+threaded: true
+threadpool_size: 20
+daemonize: true

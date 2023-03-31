@@ -63,6 +63,7 @@ class Responder
   end
 
   # thin calls this for each web query.
+  # @param env [HASH] a Rack env object (the html request)
   def call(env)
     @env = env
     @req = Rack::Request.new(env)
@@ -145,6 +146,10 @@ class Responder
       # inject session cookies into the response ( @cgi update by authenticated?() )
       headers['Set-Cookie'] = @cgi.cookies_to_a unless @cgi.output_cookies.empty?
 
+      # Nb. the response in in rack format.
+      # i.e. a 3 element array [ return_code, html_headers, html_body ]
+      #      html headers is a hash of html header value pairs
+      #      The html body must respond to each, so we pass back an array.
       return [ 200, headers, [ response ]]
     rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
       warn e.message
