@@ -14,7 +14,7 @@ require_relative "#{RLIB}/rpc/rpc.rb"
 # We can put this behind Apache2 or nginx, using proxy/rev-proxy directives.
 # The advantage is, that this process doesn't need to run as Apache, so can have a different Apparmor profile.
 # Class needs a call() method for Thin.
-class Responder
+class Wikk_Rack
   # Stripped down CGI class, with just the cookies
   class Minimal_CGI
     attr_accessor :cookies
@@ -56,7 +56,6 @@ class Responder
   # Init the Responder class
   def initialize(debug: false)
     @pstore_conf = JSON.parse(File.read(PSTORE_CONF))
-    @response = 'the quick brown fox<br>' # Test string response.
     @debug = debug
     @message = nil # We set this, if there was an exception, pre calling the rmethod.
   end
@@ -190,7 +189,7 @@ class Responder
   end
 end
 
-rack_app = Responder.new(debug: false)
+rack_app = Wikk_Rack.new(debug: false)
 
 # Gets the host (address), port and other settings from the thin.yml file
 run rack_app
