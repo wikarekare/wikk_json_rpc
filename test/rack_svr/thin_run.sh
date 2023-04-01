@@ -6,4 +6,4 @@
 # thin.yml specifies port
 #    The profile can set a uid/gid that the thin server process runs as
 # The Apparmor profile will be for the thin server, not the ruby script
-(cd /wikk/www/rpc; /usr/local/bin/wikk_thin -R rpc.ru start -C thin.yml)
+(cd /wikk/www/rpc; ./wikk_thin -R rpc.ru start -C thin.yml)
