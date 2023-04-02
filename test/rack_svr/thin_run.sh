@@ -8,7 +8,10 @@
 # The Apparmor profile will be for the thin server, not the ruby script
 
 # I'm not sure why, but if thin isn't run from the root dir, some, not all, of my file accesses
-# silently fail. I have checked, and they are using absolute paths?
+# fail. I have checked, and they are using absolute paths? Error in thin.log:
+#    line 0: Cannot load input from '/wikk/var/tmp/netstat/dist_t1680394037384956.plot'
+# Yet running thin from / works fine. 
+
 # I have set chdir '/' in the yml file too. Not sure which fixed the issue.
 
 BASEDIR=/wikk/www/rpc
