@@ -6,4 +6,10 @@
 # thin.yml specifies port
 #    The profile can set a uid/gid that the thin server process runs as
 # The Apparmor profile will be for the thin server, not the ruby script
-(cd /wikk/www/rpc; ./wikk_thin -R rpc.ru start -C thin.yml)
+
+# I'm not sure why, but if thin isn't run from the root dir, some, not all, of my file accesses
+# silently fail. I have checked, and they are using absolute paths?
+# I have set chdir '/' in the yml file too. Not sure which fixed the issue.
+
+BASEDIR=/wikk/www/rpc
+(cd /; ${BASEDIR}/wikk_thin -R ${BASEDIR}/rpc.ru start -C ${BASEDIR}/thin.yml)
