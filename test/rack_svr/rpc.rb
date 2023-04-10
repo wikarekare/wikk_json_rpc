@@ -37,12 +37,14 @@ class Wikk_Rack
       @output_hidden = {}   # We get this back from CGI::Session, which we ignore
     end
 
-    # Don't think this is the behaviour of CGI, but it will do.
+    # return the cgi parameter
+    # We aren't passing cgi parameters, so this will always be nil
     def [](_the_key)
       nil
     end
 
-    # Don't think this is the behaviour of CGI, but it will do.
+    # Look to see if we have a cgi parameter for this key
+    # We aren't passing cgi parameters, so this will always be false
     def key?(_the_key)
       false
     end
