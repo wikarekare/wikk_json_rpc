@@ -22,9 +22,11 @@ class Wikk_Rack
     attr_accessor :remote_addr
 
     def initialize(env:)
-      @env = env
+      @env = env.nil? ? {} : env
       @cookies = {}
       @remote_addr = @env['HTTP_X_FORWARDED_FOR'].nil? ? @env['REMOTE_ADDR'] : @env['HTTP_X_FORWARDED_FOR']
+      @env['REMOTE_ADDR'] = @remote_addr
+
       cookie_string = env['HTTP_COOKIE']
       unless cookie_string.nil?
         @key_values = cookie_string.split(';')
@@ -37,12 +39,14 @@ class Wikk_Rack
       @output_hidden = {}   # We get this back from CGI::Session, which we ignore
     end
 
-    # Don't think this is the behaviour of CGI, but it will do.
+    # return the cgi form parameters
+    # We aren't passing cgi parameters, so this will always be nil
     def [](_the_key)
       nil
     end
 
-    # Don't think this is the behaviour of CGI, but it will do.
+    # Look to see if we have a cgi form parameter for this key
+    # We aren't passing cgi parameters, so this will always be false
     def key?(_the_key)
       false
     end
@@ -71,9 +75,6 @@ class Wikk_Rack
 
     if @message.nil?
       # We could be behind a forwarding proxy server, so we will not see the ENV that we need to.
-      ENV['REMOTE_ADDR'] = @cgi.remote_addr
-      # Might be using REST methodology, where the REQUEST_METHOD alters behaviour
-      ENV['REQUEST_METHOD'] = @env['REQUEST_METHOD']
       # simple_test_pattern
       # test_pattern
       # dev_response
@@ -96,6 +97,7 @@ class Wikk_Rack
   end
 
   # Are we authenticated?
+  # Done outside of the rpc calls
   private def authenticated?
     begin
       return false if @cgi.nil?
@@ -136,13 +138,17 @@ class Wikk_Rack
     begin
       rpc_json = extract_json
       puts rpc_json if @debug
-      response = RPC.rpc( authenticated: authenticated?, query: rpc_json )
+      response = RPC.rpc( cgi: cgi, authenticated: authenticated?, query: rpc_json )
 
       headers = { 'Content-Type' => 'application/json' }
       # Cookies come back to us in env['HTTP_COOKIE'] as a string, and go back as 'Set-Cookie'
       # inject session cookies into the response ( @cgi update by authenticated?() )
       headers['Set-Cookie'] = @cgi.cookies_to_a unless @cgi.output_cookies.empty?
 
+      # Nb. the response in in rack format.
+      # i.e. a 3 element array [ return_code, html_headers, html_body ]
+      #      html headers is a hash of html header value pairs
+      #      The html body must respond to each, so we pass back an array.
       return [ 200, headers, [ response ]]
     rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
       warn e.message

@@ -1,8 +1,8 @@
 # Return message sent to us
 class RPC_Echo < RPC
-  def initialize(authenticated = false)
-    super(authenticated)
-    @requestor = ENV.fetch('REMOTE_ADDR', nil)
+  def initialize(cgi, authenticated = false)
+    super(cgi, authenticated)
+    @requestor = @cgi.env['REMOTE_ADDR']
     @messages = ''
   end
 
