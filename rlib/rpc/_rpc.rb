@@ -11,7 +11,8 @@ class RPC
 
   attr_reader :set_acl, :select_acl, :result_acl
 
-  def initialize(authenticated = false)
+  def initialize(cgi, authenticated = false)
+    @cgi = cgi
     @authenticated = authenticated
     @db_config = WIKK::Configuration.new(MYSQL_CONF)
   end
@@ -70,7 +71,10 @@ class RPC
 
   # Runs the remote procedure call, as specified in json 1.1 packet (with kwparams)
   # Returns whatever the method returns, or a json error message describing the failure.
-  def self.rpc(query:, authenticated: false )
+  # @param cgi [CGI] or fake CGI which responds to cgi.env[] and cgi.cookies[] and a few others. See Minimal_CGI Class.
+  # @param query [Hash] the JSON query
+  # @param authenticate [Boolean] Pre-call test shows we are/aren't authenticated.
+  def self.rpc(cgi:, query:, authenticated: false )
     begin
       # json_rpc = query.each_with_object({}) { |(k, v), h| h[k.to_sym] = v }
       json_rpc = query.transform_keys(& :to_sym )
@@ -88,7 +92,7 @@ class RPC
               if (a = json_rpc[:params]) != nil; args += a; end   # Accept this form
               kwargs = json_rpc[:kwparams].nil? ? {} : json_rpc[:kwparams]
               kwargs.transform_keys!(& :to_sym )
-              response[:result] = RPC.rsend(Kernel.const_get(the_class).new(authenticated), the_method.to_sym, *args, **kwargs)
+              response[:result] = RPC.rsend(Kernel.const_get(the_class).new(cgi, authenticated), the_method.to_sym, *args, **kwargs)
             rescue Exception => e # rubocop:disable Lint/RescueException (don't want this to fail, for any reason)
               backtrace = e.backtrace[0].split(':')
               message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]} #{backtrace[-1]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
