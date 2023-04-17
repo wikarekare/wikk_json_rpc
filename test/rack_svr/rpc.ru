@@ -9,54 +9,13 @@ require 'wikk_configuration'
 RLIB = '/wikk/rlib' unless defined? RLIB
 require_relative "#{RLIB}/wikk_conf.rb"
 require_relative "#{RLIB}/rpc/rpc.rb"
+require_relative "#{RLIB}/rpc/minimal_cgi.rb"
 
 # Handle web queries, using thin and rack.
 # We can put this behind Apache2 or nginx, using proxy/rev-proxy directives.
 # The advantage is, that this process doesn't need to run as Apache, so can have a different Apparmor profile.
 # Class needs a call() method for Thin.
 class Wikk_Rack
-  # Stripped down CGI class, with just the cookies
-  class Minimal_CGI
-    attr_accessor :cookies
-    attr_accessor :output_cookies
-    attr_accessor :remote_addr
-
-    def initialize(env:)
-      @env = env.nil? ? {} : env
-      @cookies = {}
-      @remote_addr = @env['HTTP_X_FORWARDED_FOR'].nil? ? @env['REMOTE_ADDR'] : @env['HTTP_X_FORWARDED_FOR']
-      @env['REMOTE_ADDR'] = @remote_addr
-
-      cookie_string = env['HTTP_COOKIE']
-      unless cookie_string.nil?
-        @key_values = cookie_string.split(';')
-        @key_values.each do |kv|
-          t = kv.strip.split('=', 2) # Split on first =
-          @cookies[t[0]] = t[1] unless t.nil? || t.length != 2
-        end
-      end
-      @output_cookies = []  # We get this back from CGI::Session
-      @output_hidden = {}   # We get this back from CGI::Session, which we ignore
-    end
-
-    # return the cgi form parameters
-    # We aren't passing cgi parameters, so this will always be nil
-    def [](_the_key)
-      nil
-    end
-
-    # Look to see if we have a cgi form parameter for this key
-    # We aren't passing cgi parameters, so this will always be false
-    def key?(_the_key)
-      false
-    end
-
-    # Convert each cookie to a string, and return the resulting array
-    def cookies_to_a
-      @output_cookies.map(& :to_s)
-    end
-  end
-
   # Init the Responder class
   def initialize(debug: false)
     @pstore_conf = JSON.parse(File.read(PSTORE_CONF))
@@ -69,7 +28,7 @@ class Wikk_Rack
     @env = env
     @req = Rack::Request.new(env)
     @the_body = @req.body.read     # We will want the json, and can't read this twice (debug and extract)
-    @cgi = Minimal_CGI.new(env: env)
+    @cgi = WIKK::Minimal_CGI.new(env: env)
 
     dump_html if @debug
 
