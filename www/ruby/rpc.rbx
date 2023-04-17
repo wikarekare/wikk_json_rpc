@@ -42,7 +42,7 @@ end
 
 def prod_response
   begin
-    response = RPC.rpc( authenticated: authenticated, query: extract_json )
+    response = RPC.rpc(cgi: @cgi, authenticated: authenticated, query: extract_json )
     return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
   rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
     backtrace = e.backtrace[0].split(':')
