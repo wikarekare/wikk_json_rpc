@@ -1,0 +1,44 @@
+[
+  { "src": "rlib/",
+    "dst": "rlib",
+    "mode": "0644",
+    "user": "root",
+    "group": "root"
+  },
+  { "src": "www/wikarekare/",
+    "dst": "www/wikarekare",
+    "mode": "0644",
+    "user": "root",
+    "group": "root"
+  },
+  { "src": "www/ruby/",
+    "dst": "www/ruby",
+    "mode": "0644",
+    "user": "www",
+    "group": "www"
+  },
+  { "src": "test/rack_srv/rpc.ru",
+    "dst": "www/rpc/rpc.ru",
+    "mode": "0755",
+    "user": "root",
+    "group": "root"
+  },
+  { "src": "test/rack_srv/thin_run.sh",
+    "dst": "www/rpc/thin.sh",
+    "mode": "0755",
+    "user": "root",
+    "group": "root"
+  },
+  { "src": "test/rack_srv/thin.yml",
+    "dst": "www/rpc/thin.ym/",
+    "mode": "0744",
+    "user": "root",
+    "group": "root"
+  },
+  { "src": "test/rack_srv/wikk_thin",
+    "dst": "www/rpc/wikk_thin",
+    "mode": "0755",
+    "user": "root",
+    "group": "root"
+  }
+]
