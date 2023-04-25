@@ -1,0 +1,2 @@
+# Simple way to start the test thin server
+@reboot /wikk/www/rpc/thin.sh
