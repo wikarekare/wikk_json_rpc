@@ -80,7 +80,20 @@ class RPC
       json_rpc = query.transform_keys(& :to_sym )
       response = {}
       response[:id] = json_rpc[:id] unless json_rpc[:id].nil? # Remember id (User transaction ID), as we will return it as is.
-      response[:version] = json_rpc[:version] unless json_rpc[:version].nil? # parrot this. Otherwise ignore it.
+      # Determine the RPC version.
+      if ! json_rpc[:version].nil?
+        # json rpc 1.1 get "version: 1.1", parrot this back
+        response[:version] = json_rpc[:version]
+        version = 1.1
+      elsif ! json_rpc[:jsonrpc].nil?
+        # json rpc 2.0 "jsonrpc: 2.0", parrot this back
+        response[:jsonrpc] = json_rpc[:jsonrpc]
+        version = 2.0
+      else
+        # json rpc 1.0, don't get a version number.
+        # Don't expect to see any V1.0s.
+        version = 1.0
+      end
       if ( method = json_rpc[:method] ).nil?
         response[:error] = { code: -32600, message: "No method (auth=#{authenticated})  '#{method}'" }
       else  # Using json 1.1 standard for packet (with the kwparams option)
@@ -89,8 +102,19 @@ class RPC
           if the_method != nil && RPC.rmethod?(the_class, the_method) # Only allow Remote methods to be called.
             begin
               args = []
-              if (a = json_rpc[:params]) != nil; args += a; end   # Accept this form
-              kwargs = json_rpc[:kwparams].nil? ? {} : json_rpc[:kwparams]
+              case version
+              when 1.0 # Original standard
+                # Only get positional arguments in 1.0
+                if (a = json_rpc[:params]) != nil; args += a; end
+                kwargs = {}
+              when 1.1 # Transitional standard.
+                # Could get positional and named args, but most likey just named
+                if (a = json_rpc[:params]) != nil; args += a; end   # Accept this form
+                kwargs = json_rpc[:kwparams].nil? ? {} : json_rpc[:kwparams]
+              when 2.0
+                # Only expect named arguments in 2.0, and in the params field.
+                kwargs = json_rpc[:params].nil? ? {} : json_rpc[:params]
+              end
               kwargs.transform_keys!(& :to_sym )
               response[:result] = RPC.rsend(Kernel.const_get(the_class).new(cgi, authenticated), the_method.to_sym, *args, **kwargs)
             rescue Exception => e # rubocop:disable Lint/RescueException (don't want this to fail, for any reason)
