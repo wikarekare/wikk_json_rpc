@@ -1,6 +1,6 @@
 # WIKK JSON RPC
 
-Experimenting with using JSON RPC method calls, from web pages, using ruby plugins as the RPC method handlers. I have worked with Rails, but now find myself prototyping web pages in Javascript. I can quickly get a working dynamic page, using dummy data. Then it is simple to add an Ajax call to fetch that data from a server.  JSON RPC or REST both look like a clean ways to do this. 
+Experimenting with using JSON RPC method calls, from web pages, using ruby plugins as the RPC method handlers. I have worked with Rails, but now find myself prototyping web pages in Javascript. I can quickly get a working dynamic page, using dummy data. Then it is simple to add an Ajax call to fetch that data from a server.  JSON RPC or REST both look like a clean ways to do this.
 
 ## rpc.rbx
 
@@ -110,8 +110,8 @@ The dynamic code generation also has an argument vetting process, with arrays de
 
 ```
 {
-  "id": 1236,
-  "version": "1.1",
+  "id": Date.getTime(),
+  "jsonrpc": 2.0
   "timestamp": "20230417T024828",
   "result": {
     "remote_addr": "127.0.0.1",
@@ -129,7 +129,7 @@ Example of calling a nonexistent rmethod
 ```
 {
   "id": 1234,
-  "version": "1.1",
+  "jsonrpc": 2.0
   "error": {
     "code": -32601,
     "message": "No method (auth=true) 'RPC_Echo.no_method'"

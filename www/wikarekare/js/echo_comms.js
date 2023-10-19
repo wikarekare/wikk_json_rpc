@@ -31,13 +31,13 @@ var wikk_echo = ( function() {
 
     var args = {
       "method": "RPC_Echo.echo",
-      "kwparams": {
+      "params": {
         "select_on": { "message": message },
         "set": {},
         "result": ["response"]
       },
-      "id": 1236,
-      "version": "1.1"
+      "id": Date.getTime(),
+      "jsonrpc": 2.0
     }
 
     url = "/ruby/rpc.rbx"

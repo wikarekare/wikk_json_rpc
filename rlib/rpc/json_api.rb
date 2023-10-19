@@ -3,14 +3,13 @@ require 'json'
 
 # { //Json-rpc example
 #     "method"  : "X.sum", //In our case, this is class.rmethod. Class may be 1:1 to an SQL table, or do random stuff.
-#     "params"  :  [17, 25], //optional. Which we will ignore, as I want parameters to be named.
-#     "kwparams"  :  { "a": 17, "b": 25 }, //optional in alt mode. (Which we will use, to explicitly name parametres)
-#     "version" : "1.1", // version of the json rpc standard. (Which we are likely to be breaking)
+#     "params"  :  { "a": 17, "b": 25 }, //optional in alt mode. (Which we will use, to explicitly name parametres)
+#     "jsonrpc" : "2.0", // version of the json rpc standard. (Which we are likely to be breaking)
 #     "id": 12345 //optional, and returned to caller if present.
 # }
 # { //success.
 #   "result"  :  { "value": 42 }, //Format is call dependent
-#   "version" : "1.1", // version of the json rpc standard. (Which we are likely to be breaking)
+#   "jsonrpc" : "2.0", // version of the json rpc standard. (Which we are likely to be breaking)
 #   "id": 12345 //returned if call sends id (ie. it is the callers reference)
 # }
 # { //failure.
@@ -25,7 +24,7 @@ require 'json'
 #            }
 #        }
 #   }
-#   "version" : "1.1",
+#   "jsonrpc" : "2.0",
 #   "id": 12345 //returned if call sends id
 # }
 #
