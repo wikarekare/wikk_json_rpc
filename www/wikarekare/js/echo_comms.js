@@ -40,7 +40,7 @@ var wikk_echo = ( function() {
       "jsonrpc": 2.0
     }
 
-    url = "/ruby/rpc.rbx"
+    url = RPC
     wikk_ajax.delayed_ajax_post_call(url, args, get_echo_callback, get_echo_error, get_echo_completion, 'json', true, delay);
     return false;
   }
