@@ -4,6 +4,7 @@ module WIKK
     attr_accessor :cookies
     attr_accessor :output_cookies
     attr_accessor :remote_addr
+    attr_accessor :env
 
     def initialize(env:)
       @env = env.nil? ? {} : env
