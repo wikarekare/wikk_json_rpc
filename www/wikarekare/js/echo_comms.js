@@ -36,11 +36,11 @@ var wikk_echo = ( function() {
         "set": {},
         "result": ["response"]
       },
-      "id": Date.getTime(),
+      "id": new Date().getTime(),
       "jsonrpc": 2.0
     }
 
-    url = RPC
+    url = RPC_URL
     wikk_ajax.delayed_ajax_post_call(url, args, get_echo_callback, get_echo_error, get_echo_completion, 'json', true, delay);
     return false;
   }

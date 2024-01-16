@@ -9,7 +9,7 @@ TEST_WEB_SERVER = '127.0.0.1'
 TEST_PORT = 3223
 
 # Test rpc.rbx cgi via http
-class RPC
+class REMOTE_RPC
   def initialize(url:, host:, identity: nil, auth: nil)
     @cookies = nil
     @url = url
@@ -91,26 +91,26 @@ end
 def fetch_rmethods
   puts 'Entering fetch_rmethods'
   begin
-    r = RPC.rpc(  url: 'rpc',
-                  host: @options[:host],
-                  port: @options[:port],
-                  query: { 'method' => 'Test.get_rmethods',
-                           'kwparams' => {
-                             'select_on' => {},
-                             'set' => {},
-                             'result' => []
-                           },
-                           'id' => 1234,
-                           'version' => '1.1'
+    r = REMOTE_RPC.rpc(  url: 'rpc',
+                         host: @options[:host],
+                         port: @options[:port],
+                         query: { 'method' => 'Test.get_rmethods',
+                                  'kwparams' => {
+                                    'select_on' => {},
+                                    'set' => {},
+                                    'result' => []
+                                  },
+                                  'id' => 1234,
+                                  'version' => '1.1'
                         }
-               )
+                      )
     puts 'fetch_rmethods: Test.get_rmethods call completed'
     puts r.class
     puts r
     puts 'Cookies:'
     puts cookies_to_s
   rescue StandardError => e
-    puts "Exception from Test.get_rmethods RPC.rpc: #{e.message}"
+    puts "Exception from Test.get_rmethods REMOTE_RPC.rpc: #{e.message}"
   end
 end
 

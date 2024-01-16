@@ -11,7 +11,7 @@ class RPC
 
   attr_reader :set_acl, :select_acl, :result_acl
 
-  def initialize(cgi, authenticated = false)
+  def initialize(cgi:, authenticated: false)
     @cgi = cgi
     @authenticated = authenticated
     @db_config = WIKK::Configuration.new(MYSQL_CONF)
@@ -116,7 +116,7 @@ class RPC
                 kwargs = json_rpc[:params].nil? ? {} : json_rpc[:params]
               end
               kwargs.transform_keys!(& :to_sym )
-              response[:result] = RPC.rsend(Kernel.const_get(the_class).new(cgi, authenticated), the_method.to_sym, *args, **kwargs)
+              response[:result] = RPC.rsend(Kernel.const_get(the_class).new(cgi: cgi, authenticated: authenticated), the_method.to_sym, *args, **kwargs)
             rescue Exception => e # rubocop:disable Lint/RescueException (don't want this to fail, for any reason)
               backtrace = e.backtrace[0].split(':')
               message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]} #{backtrace[-1]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')

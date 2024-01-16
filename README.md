@@ -26,8 +26,8 @@ Is called using a thin server, running the test/rack_svr/thin_run.sh script.
 Apache2 config has proxy modules added, and the config is
 ```
 <Location "/rpc">
-    ProxyPass "http://127.0.0.1:3223/"
-    ProxyPassReverse "http://127.0.0.1:3223/"
+    ProxyPass "https://127.0.0.1:3223/"
+    ProxyPassReverse "https://127.0.0.1:3223/"
 </Location>
 ```
 
@@ -56,8 +56,8 @@ This has no DB calls. It just sends back the message we send to it.  As a conven
 class RPC_Echo < RPC
   # @param cgi [CGI] Either a real Ruby CGI class or a dummy one (see minimal_cgi.rb)
   # @param authenticated [Boolean] Tests is done before this class is instantiated
-  def initialize(cgi, authenticated = false)
-    super(cgi, authenticated)
+  def initialize(cgi:, authenticated: false)
+    super(cgi: cgi, authenticated: authenticated)
     @requestor = @cgi.env['REMOTE_ADDR']
     @messages = ''
   end
@@ -110,7 +110,7 @@ The dynamic code generation also has an argument vetting process, with arrays de
 
 ```
 {
-  "id": Date.getTime(),
+  "id": new Date().getTime(),
   "jsonrpc": 2.0
   "timestamp": "20230417T024828",
   "result": {
