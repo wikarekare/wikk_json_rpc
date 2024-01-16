@@ -22,8 +22,8 @@ The thin_run.c launches rpc.rb, which is identical to the rpc.ru file, excepting
 I'm running tests behind apache, with the proxy modules included, and proxy anything going to /rpc with:
 ```
 <Location "/rpc">
-    ProxyPass "http://127.0.0.1:3223/"
-    ProxyPassReverse "http://127.0.0.1:3223/"
+    ProxyPass "https://127.0.0.1:3223/"
+    ProxyPassReverse "https://127.0.0.1:3223/"
 </Location>
 ```
 

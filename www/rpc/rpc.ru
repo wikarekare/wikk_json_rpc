@@ -34,6 +34,9 @@ class Wikk_Rack
 
     if @message.nil?
       # We could be behind a forwarding proxy server, so we will not see the ENV that we need to.
+      ENV['REMOTE_ADDR'] = @cgi.remote_addr
+      # Might be using REST methodology, where the REQUEST_METHOD alters behaviour
+      ENV['REQUEST_METHOD'] = @env['REQUEST_METHOD']
       # simple_test_pattern
       # test_pattern
       # dev_response
@@ -97,7 +100,7 @@ class Wikk_Rack
     begin
       rpc_json = extract_json
       puts rpc_json if @debug
-      response = RPC.rpc( cgi: cgi, authenticated: authenticated?, query: rpc_json )
+      response = RPC.rpc( cgi: @cgi, authenticated: authenticated?, query: rpc_json )
 
       headers = { 'Content-Type' => 'application/json' }
       # Cookies come back to us in env['HTTP_COOKIE'] as a string, and go back as 'Set-Cookie'

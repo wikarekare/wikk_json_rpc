@@ -98,7 +98,7 @@ class Wikk_Rack
     begin
       rpc_json = extract_json
       puts rpc_json if @debug
-      response = RPC.rpc( cgi: cgi, authenticated: authenticated?, query: rpc_json )
+      response = RPC.rpc( cgi: @cgi, authenticated: authenticated?, query: rpc_json )
 
       headers = { 'Content-Type' => 'application/json' }
 
