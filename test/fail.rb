@@ -1,9 +1,12 @@
 #!/usr/local/bin/ruby
 require 'time'
-RLIB = '/wikk/rlib' unless defined? RLIB
-require_relative "#{RLIB}/wikk_conf.rb"  # to get MYSQL_CONF (which we don't actually use, but is read)
-require_relative '../rlib/rpc/rpc.rb'
-require_relative '../rlib/rpc/minimal_cgi.rb'
+
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
+# to get MYSQL_CONF (which we don't actually use, but is read)
+require_relative "#{RLIB}/rpc/rpc.rb"
+require_relative "#{RLIB}/rpc/minimal_cgi.rb"
 
 # Test through Ruby RPC instance, not via TCP Socket
 def test_rpc_echo(cgi)

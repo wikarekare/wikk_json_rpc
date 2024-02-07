@@ -1,7 +1,10 @@
 #!/usr/local/bin/ruby
 require 'time'
 require 'json'
-RLIB = '/wikk/rlib' unless defined? RLIB
+
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 require_relative "#{RLIB}/rpc/rpc.rb"
 require_relative "#{RLIB}/rpc/minimal_cgi.rb"
 

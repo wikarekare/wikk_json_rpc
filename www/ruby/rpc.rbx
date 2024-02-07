@@ -1,6 +1,10 @@
 #!/usr/local/bin/ruby
+# Errors are returned in @message
 @message = nil
-RLIB = '/wikk/rlib' unless defined? RLIB
+
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 
 # Having issues with gems not loading, so catching the error for logging
 [ 'cgi', 'json', 'wikk_web_auth', 'wikk_configuration' ].each do |f|
@@ -10,7 +14,7 @@ RLIB = '/wikk/rlib' unless defined? RLIB
     @message = "#{f}: #{e}"
   end
 end
-[ "#{RLIB}/wikk_conf.rb", "#{RLIB}/rpc/rpc.rb" ].each do |f|
+[ "#{RLIB}/rpc/rpc.rb" ].each do |f|
   begin
     require_relative f
   rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash

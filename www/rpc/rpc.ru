@@ -6,8 +6,9 @@ require 'json'
 require 'wikk_web_auth'
 require 'wikk_configuration'
 
-RLIB = '/wikk/rlib' unless defined? RLIB
-require_relative "#{RLIB}/wikk_conf.rb"
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 require_relative "#{RLIB}/rpc/rpc.rb"
 require_relative "#{RLIB}/rpc/minimal_cgi.rb"
 
