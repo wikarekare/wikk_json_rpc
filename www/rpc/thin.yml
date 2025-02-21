@@ -5,7 +5,7 @@ chdir: "/"
 environment: development
 address: 127.0.0.1
 port: 3223
-timeout: 30
+timeout: 180
 log: "/wikk/var/log/httpd/thin.log"
 pid: /wikk/var/run/apache2/thin.pid
 max_conns: 1024
