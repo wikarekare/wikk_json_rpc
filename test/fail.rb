@@ -1,9 +1,7 @@
 #!/usr/local/bin/ruby
 require 'time'
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 # to get MYSQL_CONF (which we don't actually use, but is read)
 require_relative "#{RLIB}/rpc/rpc.rb"
 require_relative "#{RLIB}/rpc/minimal_cgi.rb"

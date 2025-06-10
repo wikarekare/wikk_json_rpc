@@ -2,9 +2,7 @@
 # Errors are returned in @message
 @message = nil
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 # Having issues with gems not loading, so catching the error for logging
 [ 'cgi', 'json', 'wikk_web_auth', 'wikk_configuration' ].each do |f|
