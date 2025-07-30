@@ -2,13 +2,14 @@
 require 'thin'
 require 'rack'
 require 'cgi'
+require 'time'
 require 'json'
 require 'wikk_web_auth'
 require 'wikk_configuration'
 
 load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
-require_relative "#{RLIB}/rpc/rpc.rb"
 require_relative "#{RLIB}/rpc/minimal_cgi.rb"
+require_relative "#{RLIB}/rpc/rpc.rb"
 
 # Handle web queries, using thin and rack.
 # We can put this behind Apache2 or nginx, using proxy/rev-proxy directives.
@@ -115,7 +116,7 @@ class Wikk_Rack
       warn e.message
       backtrace = e.backtrace[0].split(':')
       warn backtrace
-      @message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
+      @message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub('\'', '\\\'')}".gsub("\n", ' ').gsub('<', '&lt;').gsub('>', '&gt;')
       response = { code: -32000,
                    response: @message,
                    message: "Method: (auth=#{authenticated?})"
