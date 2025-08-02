@@ -82,7 +82,7 @@ module SQL_Helpers
   end
 
   # Build a SELECT field list
-  def to_result(result:, acceptable_list: [])
+  def to_result(result:, acceptable_list: [], with_tables: false)
     result_strings = []
     if result != nil
       result.each do |v|
@@ -90,6 +90,7 @@ module SQL_Helpers
         result_strings << "#{v}"
       end
     end
+    result_strings.map! { |s| "#{s} AS '#{s}'" } if with_tables
     return result_strings.length > 0 ? result_strings.join(', ') : acceptable_list.join(', ')
   end
 
