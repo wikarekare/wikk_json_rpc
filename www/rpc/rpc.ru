@@ -65,7 +65,7 @@ class Wikk_Rack
       return false if @cgi.nil?
 
       return WIKK::Web_Auth.authenticated?(@cgi, pstore_config: @pstore_conf)
-    rescue Exception => _e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
+    rescue Exception => _e # rubocop: disable Lint/RescueException
       return false
     end
   end
@@ -81,7 +81,7 @@ class Wikk_Rack
   private def test_pattern
     begin
       logged_in = authenticated?
-    rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
+    rescue Exception => e # rubocop: disable Lint/RescueException
       @message = "test_pattern: Auth test: #{e}"
     end
     response = "{ \"authenticated\": \"#{logged_in}\", \"a2\": \"#{logged_in}\", \"message\": \"#{@message}\" }"
@@ -112,7 +112,7 @@ class Wikk_Rack
       #      html headers is a hash of html header value pairs
       #      The html body must respond to each, so we pass back an array.
       return [ 200, headers, [ response ]]
-    rescue Exception => e # rubocop: disable Lint/RescueException # We need to return to the caller, and not just crash
+    rescue Exception => e # rubocop: disable Lint/RescueException
       warn e.message
       backtrace = e.backtrace[0].split(':')
       warn backtrace

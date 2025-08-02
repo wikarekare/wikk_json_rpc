@@ -63,7 +63,7 @@ class RPC_Echo < RPC
   end
 
   # rmethods are the RPC methods we call via JSON RPC
-  rmethod :echo do |select_on: nil, set: nil, result: nil, **kwargs| # rubocop: disable Lint/UnusedBlockArgument # Want consistent params
+  rmethod :echo do |select_on: nil, set: nil, result: nil, **kwargs| # rubocop: disable Lint/UnusedBlockArgument
     return response(address_string: @requestor, message_received: select_on['message'])
   end
 

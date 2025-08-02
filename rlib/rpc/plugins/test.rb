@@ -14,7 +14,7 @@ class Test < RPC
   end
 
   # rmethods are the RPC methods we call via the JSON RPC
-  rmethod :get_rmethods do |select_on: nil, set: nil, result: nil, **kwargs| # rubocop: disable Lint/UnusedBlockArgument # Want consistent params
+  rmethod :get_rmethods do |select_on: nil, set: nil, result: nil, **kwargs| # rubocop: disable Lint/UnusedBlockArgument
     return response(rmethods: @@rmethods)
   end
 
