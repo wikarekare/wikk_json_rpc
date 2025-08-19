@@ -24,7 +24,7 @@ class REMOTE_RPC
   # @param query [String] JSON RPC post data
   # @param return [String] Parsed JSON response from the web server
   def self.rpc(url:, host:, port:, query:)
-    WIKK::WebBrowser.https_session(host: host, port: port) do |ws|
+    WIKK::WebBrowser.http_session(host: host, port: port) do |ws|
       response = ws.post_page(query: url,
                               # authorization: wb.bearer_authorization(token: @auth_token),
                               content_type: 'application/json',
@@ -43,7 +43,7 @@ end
 # @param query [String] JSON RPC post data
 # @param return [String] Parsed JSON response from the web server
 def rpc(url:, host:, port:, query:)
-  WIKK::WebBrowser.https_session(host: host, port: port) do |ws|
+  WIKK::WebBrowser.http_session(host: host, port: port) do |ws|
     response = ws.post_page(query: url,
                             # authorization: wb.bearer_authorization(token: @auth_token),
                             content_type: 'application/json',
@@ -88,8 +88,8 @@ def cookies_to_s
   @cookies.nil? ? '' : @cookies.to_a.map { |v| v.join('=') }.join('; ')
 end
 
-def test_rpc_rmethods
-  puts 'Entering test_rpc_rmethods'
+def fetch_rmethods
+  puts 'Entering fetch_rmethods'
   begin
     r = REMOTE_RPC.rpc(  url: 'rpc',
                          host: @options[:host],
@@ -104,7 +104,7 @@ def test_rpc_rmethods
                                   'version' => '1.1'
                         }
                       )
-    puts 'test_rpc_rmethods: Test.get_rmethods call completed'
+    puts 'fetch_rmethods: Test.get_rmethods call completed'
     puts r.class
     puts r
     puts 'Cookies:'
@@ -152,4 +152,4 @@ test_rpc_echo
 
 puts
 puts 'Registered rmethods'
-test_rpc_rmethods
+fetch_rmethods
