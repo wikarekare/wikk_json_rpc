@@ -8,7 +8,7 @@ end
 # Respond with a list of rmethod calls
 class Test < RPC
   def initialize(cgi:, authenticated: false)
-    super(cgi: cgi, authenticated: authenticated)
+    super
     @requestor = @cgi.env['REMOTE_ADDR']
     @messages = ''
   end

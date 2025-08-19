@@ -105,11 +105,13 @@ class RPC
               case version
               when 1.0 # Original standard
                 # Only get positional arguments in 1.0
-                if (a = json_rpc[:params]) != nil; args += a; end
+                a = json_rpc[:params]
+                args += a unless a.nil?
                 kwargs = {}
               when 1.1 # Transitional standard.
                 # Could get positional and named args, but most likey just named
-                if (a = json_rpc[:params]) != nil; args += a; end   # Accept this form
+                a = json_rpc[:params]
+                args += a unless a.nil?
                 kwargs = json_rpc[:kwparams].nil? ? {} : json_rpc[:kwparams]
               when 2.0
                 # Only expect named arguments in 2.0, and in the params field.
@@ -117,9 +119,9 @@ class RPC
               end
               kwargs.transform_keys!(& :to_sym )
               response[:result] = RPC.rsend(Kernel.const_get(the_class).new(cgi: cgi, authenticated: authenticated), the_method.to_sym, *args, **kwargs)
-            rescue Exception => e # rubocop:disable Lint/RescueException (don't want this to fail, for any reason)
+            rescue Exception => e # rubocop:disable Lint/RescueException -- (don't want this to fail, for any reason)
               backtrace = e.backtrace[0].split(':')
-              message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]} #{backtrace[-1]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
+              message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]} #{backtrace[-1]}): #{e.message.to_s.gsub('\'', '\\\'')}".gsub("\n", ' ').gsub('<', '&lt;').gsub('>', '&gt;')
               response[:error] = { code: -32000, message: "Method #{the_method} (auth=#{authenticated}) RPC: '#{method}': #{message} " }
             end
           else
@@ -129,9 +131,9 @@ class RPC
           response[:error] = { code: -32602, message: "No Class (auth=#{authenticated}) '#{method}'" }
         end
       end
-    rescue Exception => e # rubocop:disable Lint/RescueException (don't want this to fail, for any reason)
+    rescue Exception => e # rubocop:disable Lint/RescueException -- (don't want this to fail, for any reason)
       backtrace = e.backtrace[0].split(':')
-      message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
+      message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub('\'', '\\\'')}".gsub("\n", ' ').gsub('<', '&lt;').gsub('>', '&gt;')
       response[:error] = { code: -32000, message: "Method (auth=#{authenticated}) '#{method}': #{message}" }
     end
     return response.to_j

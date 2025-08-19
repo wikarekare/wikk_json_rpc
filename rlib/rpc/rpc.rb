@@ -11,7 +11,7 @@ Dir.open("#{path}/plugins").each do |filename|
 
   begin
     require_relative "#{path}/plugins/#{filename}"
-  rescue Exception => e # rubocop:disable Lint/RescueException
+  rescue Exception => e # rubocop:disable Lint/RescueException -- We don't want cgi's crashing without producing output
     $stderr.puts "Skipping loading '#{path}/plugins/#{filename}' Error: #{e}"
   end
 end

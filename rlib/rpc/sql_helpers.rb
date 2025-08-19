@@ -14,7 +14,7 @@ module SQL_Helpers
   # Validate we are permitted to view all fields requested
   def acceptable_list(list:, acceptable_list: [])
     if list != nil
-      list.each do |k, _v|
+      list.each_key do |k|
         acceptable(field: k, acceptable_list: acceptable_list)
       end
     end
@@ -135,8 +135,7 @@ module SQL_Helpers
       end
       grouped_response[primary_key_value][secondary_table] << secondary_record
     end
-    new_rows = []
-    grouped_response.each { |_k, v| new_rows << v }
+    new_rows = grouped_response.values
     return { 'rows' => new_rows, 'affected_rows' => new_rows.length }
   end
 

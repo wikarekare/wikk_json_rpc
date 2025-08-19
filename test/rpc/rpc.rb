@@ -40,7 +40,7 @@ class Wikk_Rack
       return prod_response
     else
       # There was an error
-      return [ 500, { 'Content-Type' => 'application/json' }, [ @message.to_j ]]
+      return [ 500, { 'Content-Type' => 'application/json' }, [ @message.to_j ] ]
     end
   end
 
@@ -71,7 +71,7 @@ class Wikk_Rack
   # Send back what we were sent
   private def dev_response
     response = extract_json.to_s
-    return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+    return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
   end
 
   # Dev response, showing our authentication state in the response.
@@ -82,13 +82,13 @@ class Wikk_Rack
       @message = "test_pattern: Auth test: #{e}"
     end
     response = "{ \"authenticated\": \"#{logged_in}\", \"a2\": \"#{logged_in}\", \"message\": \"#{@message}\" }"
-    return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+    return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
   end
 
   # Simple dev response. Just respond with any error message set by an exception.
   private def simple_test_pattern
     response = "{ \"message\": \"#{@message}\" }"
-    return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+    return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
   end
 
   # Response if we are running in production.
@@ -109,18 +109,18 @@ class Wikk_Rack
       # i.e. a 3 element array [ return_code, html_headers, html_body ]
       #      html headers is a hash of html header value pairs
       #      The html body must respond to each, so we pass back an array.
-      return [ 200, headers, [ response ]]
+      return [ 200, headers, [ response ] ]
     rescue Exception => e # rubocop: disable Lint/RescueException
       warn e.message
       backtrace = e.backtrace[0].split(':')
       warn backtrace
-      @message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
+      @message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub('\'', '\\\'')}".gsub("\n", ' ').gsub('<', '&lt;').gsub('>', '&gt;')
       response = { code: -32000,
                    response: @message,
                    message: "Method: (auth=#{authenticated?})"
       }.to_j
 
-      return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+      return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
     end
   end
 

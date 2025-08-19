@@ -37,13 +37,10 @@ require 'json'
 # }
 #
 class Json_RPC
-  def initialize
-  end
-
   def json_to_rpc(json_str)
     begin
       RPC.rpc( json_str.to_h ).to_json
-    rescue Exception => _e # rubocop:disable Lint/RescueException (don't want this to fail, for any reason)
+    rescue Exception => _e # rubocop:disable Lint/RescueException -- (don't want this to fail, for any reason)
       # puts "Json_RPC Failed with: #{e}"
     end
   end

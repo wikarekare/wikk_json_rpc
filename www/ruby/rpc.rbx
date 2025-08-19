@@ -39,22 +39,22 @@ end
 
 def dev_response
   response = extract_json.to_s
-  return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+  return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
 end
 
 def prod_response
   begin
     response = RPC.rpc(cgi: @cgi, authenticated: authenticated, query: extract_json )
-    return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+    return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
   rescue Exception => e # rubocop: disable Lint/RescueException
     backtrace = e.backtrace[0].split(':')
-    @message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub(/'/, '\\\'')}".gsub(/\n/, ' ').gsub(/</, '&lt;').gsub(/>/, '&gt;')
+    @message = "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub('\'', '\\\'')}".gsub("\n", ' ').gsub('<', '&lt;').gsub('>', '&gt;')
     response = { code: -32000,
                  response: @message,
                  message: "Method: (auth=#{authenticated})"
     }.to_j
 
-    return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+    return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
   end
 end
 
@@ -65,12 +65,12 @@ def test_pattern
     @message = "test_pattern: Auth test: #{e}"
   end
   response = "{ \"authenticated\": \"#{authenticated}\", \"a2\": \"#{logged_in}\", \"message\": \"#{@message}\" }"
-  return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+  return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
 end
 
 def simple_test_pattern
   response = "{ \"message\": \"#{@message}\" }"
-  return [ 200, { 'Content-Type' => 'application/json' }, [ response ]]
+  return [ 200, { 'Content-Type' => 'application/json' }, [ response ] ]
 end
 
 @cgi = CGI.new('html5')
@@ -83,7 +83,7 @@ rack_result = if @message.nil?
                 prod_response
               else
                 # There was an error
-                [ 500, { 'Content-Type' => 'application/json' }, [ @message.to_j ]]
+                [ 500, { 'Content-Type' => 'application/json' }, [ @message.to_j ] ]
               end
 
 @cgi.out('type' => 'application/json') do
